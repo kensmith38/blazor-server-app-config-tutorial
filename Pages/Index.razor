@@ -1,0 +1,104 @@
+﻿@page "/"
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<PageTitle>Index</PageTitle>
+
+<h1>BlazorServer App Config Tutorial</h1>
+<div style="max-width: 800px;">
+    <p>Important concepts</p>
+    <ul>
+        <li>We used Dependency Injection for IConfiguration in Index.razor.</li>
+        <li>
+            Secret settings should not be set in appsettings.json or appsettings.Development.json
+            because they would be exposed to anyone with access to your source code (github for example).
+        </li>
+        <li>The App Service (on Azure) needs at least 'Key Vault Secrets User' role.</li>
+    </ul>
+</div>
+
+<div class="grid-container">
+    <div class="grid-item">
+        <table style="max-width: 800px">
+            <tr>
+                <th>All locations of secret named: MySecret</th>
+            </tr>
+            <tr>
+                <td>appsettings.json </td>
+            </tr>
+            <tr>
+                <td>appsettings.Development.json</td>
+            </tr>
+            <tr>
+                <td>secrets.json</td>
+            </tr>
+            <tr>
+                <td>Azure Key Vault</td>
+            </tr>
+            <tr>
+                <td>Azure App Services/Configuration</td>
+            </tr>
+        </table>
+    </div>
+    <div class="grid-item">
+        <p><b>Search order when running in Visual Studio (Development)</b></p>
+        <ol>
+            <li>Azure Key Vault (see Note 1)</li>
+            <li>secrets.json</li>
+            <li>appsettings.Development.json</li>
+            <li>appsettings.json</li>
+        </ol>
+        <p>Note 1: Azure Key Vault only searched if it is included as a provider in Program.cs</p>
+    </div>
+    <div class="grid-item">
+        <p><b>Search order when running as Azure App Service (Production)</b></p>
+        <ol>
+            <li>Azure Key Vault</li>
+            <li>Azure App Services/Configuration</li>
+            <li>appsettings.json</li>
+        </ol>
+    </div>
+</div>
+
+
+<br />
+<p><b>Value of MySecret:</b> @Configuration["MySecret"]</p>
+
+<div style="color: red; width:800px;">
+    <h4>If you modify an Azure Key in the vault, then you must restart the app 
+        and close all browser windows before going back to the website.</h4>
+    
+</div>
+
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 10px;
+    }
+
+    .grid-container {
+        display: grid;
+        column-gap: 10px;
+        grid-template-columns: auto auto auto;
+        background-color: #2196F3;
+        padding: 10px;
+    }
+
+    .grid-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        font-size: 18px;
+        text-align: left;
+        width: 340px;
+    }
+</style>
+
+
