@@ -21,7 +21,15 @@ var configuration = builder.Configuration;
 if (builder.Environment.IsProduction())
 {
     configuration.AddAzureKeyVault(new Uri("https://kentestkv.vault.azure.net/"), new DefaultAzureCredential());
+    // 11/24/2023 Adding AppConfiguration: 
+    configuration.AddAzureAppConfiguration(options =>
+        options.Connect(
+            //new Uri(builder.Configuration["AppConfig:Endpoint"]),    <--- should do this with AppConfig:Endpoint specified in appsettings.json
+            new Uri("https://kentestappcfg.azconfig.io"),           // <--- quick and dirty hard-coded for now
+            new DefaultAzureCredential()));                         // Allows me to run on VisualStudio and Production!
+            //new ManagedIdentityCredential()));
 }
+
 // Quick test in debug (also see <h2>@Configuration["MySecret"]</h2> in index.razor)
 // Console.WriteLine(configuration["MySecret"]);
 
